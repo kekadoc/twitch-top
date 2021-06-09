@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/destination_main">
+
+    <fragment
+        android:id="@+id/destination_main"
+        android:name="com.kekadoc.test.twitch.streams.ui.MainFragment"
+        tools:layout="@layout/fragment_top">
+        <action
+            android:id="@+id/action_destination_main_to_destination_feedback"
+            app:destination="@id/destination_feedback" />
+    </fragment>
+    <dialog
+        android:id="@+id/destination_feedback"
+        android:name="com.kekadoc.test.twitch.streams.ui.DialogFeedback"
+        tools:layout="@layout/dialog_feedback">
+        <action
+            android:id="@+id/action_destination_feedback_to_destination_main"
+            app:destination="@id/destination_main" />
+    </dialog>
+</navigation>

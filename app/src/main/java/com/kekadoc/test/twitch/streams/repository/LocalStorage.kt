@@ -1,7 +1,6 @@
-package com.kekadoc.test.twitch.streams.storage
+package com.kekadoc.test.twitch.streams.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.room.*
 import com.kekadoc.test.twitch.streams.model.TwitchTopResponseElement
 import kotlinx.serialization.decodeFromString
@@ -11,10 +10,11 @@ import kotlinx.serialization.json.Json
 @Entity(tableName = "database-games")
 data class DatabaseUnit(@PrimaryKey(autoGenerate = false) val position: Int, @ColumnInfo(name = "data") val data: String)
 
-@Database(entities = arrayOf(DatabaseUnit::class), version = 1)
+@Database(entities = [DatabaseUnit::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun gamesDao(): GamesDao
 }
+
 @Dao
 interface GamesDao {
 
@@ -42,6 +42,7 @@ class LocalStorage(context: Context) {
 
     companion object {
         private const val TAG: String = "LocalStorage-TAG"
+
         @Volatile private var instance: LocalStorage? = null
         fun getInstance(context: Context): LocalStorage {
             return instance ?: synchronized(this) {
@@ -50,21 +51,21 @@ class LocalStorage(context: Context) {
         }
     }
 
-    val db = Room.databaseBuilder(context, AppDatabase::class.java, "database-games").build()
-    val userDao = db.gamesDao()
+    private val db = Room.databaseBuilder(context, AppDatabase::class.java, "database-games").build()
+    private val gamesDao = db.gamesDao()
 
     suspend fun saveAll(element: Map<Int, TwitchTopResponseElement>) {
         val list = arrayListOf<DatabaseUnit>()
         element.forEach {
             list.add(DatabaseUnit(it.key, Json.encodeToString(it.value)))
         }
-        userDao.insertAll(list)
+        gamesDao.insertAll(list)
     }
     suspend fun deleteAll() {
-        userDao.deleteAll()
+        gamesDao.deleteAll()
     }
     suspend fun getAll(): Map<Int, TwitchTopResponseElement> {
-        val list = userDao.getAll()
+        val list = gamesDao.getAll()
         val result = mutableMapOf<Int, TwitchTopResponseElement>()
         list.forEach {
             result[it.position] = Json.decodeFromString(it.data)
@@ -72,7 +73,7 @@ class LocalStorage(context: Context) {
         return result
     }
     suspend fun getAll(positions: List<Int>): Map<Int, TwitchTopResponseElement> {
-        val list = userDao.getAll(positions)
+        val list = gamesDao.getAll(positions)
         val result = mutableMapOf<Int, TwitchTopResponseElement>()
         list.forEach {
             result[it.position] = Json.decodeFromString(it.data)

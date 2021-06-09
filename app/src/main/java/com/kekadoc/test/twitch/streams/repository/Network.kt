@@ -20,6 +20,7 @@ interface CourseService {
     @Headers("Accept: application/vnd.twitchtv.v5+json", "Client-ID: ahuoi1tl0qmqbyi8jo8nitbmuaad7w")
     @GET("kraken/games/top")
     fun get(@Query("limit") limit: Int, @Query("offset") offset: Int): Call<TwitchTopResponse>
+
 }
 
 object Repository {

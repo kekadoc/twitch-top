@@ -3,6 +3,7 @@ package com.kekadoc.test.twitch.streams.ui
 import android.app.Application
 import android.graphics.Rect
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -15,15 +16,17 @@ import androidx.paging.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.kekadoc.test.twitch.streams.R
 import com.kekadoc.test.twitch.streams.databinding.FragmentTopBinding
 import com.kekadoc.test.twitch.streams.databinding.GameViewBinding
 import com.kekadoc.test.twitch.streams.dpToPx
 import com.kekadoc.test.twitch.streams.model.TwitchTopResponseElement
 import com.kekadoc.test.twitch.streams.paging.ExamplePagingSource
 import com.kekadoc.test.twitch.streams.repository.Repository
-import com.kekadoc.test.twitch.streams.storage.LocalStorage
+import com.kekadoc.test.twitch.streams.repository.LocalStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class MainFragmentViewModel(application: Application) : AndroidViewModel(application) {
@@ -54,7 +57,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         binding.recyclerView.apply {
             adapter = this@MainFragment.adapter
             addItemDecoration(Decorator(requireContext().dpToPx(4f).toInt()))
@@ -77,6 +79,7 @@ class MainFragment : Fragment() {
                 }
             }
         }
+
     }
 
     private class Decorator(val space: Int) : RecyclerView.ItemDecoration() {
@@ -95,7 +98,13 @@ class MainFragment : Fragment() {
     }
     private class VH(val binding: GameViewBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(value: TwitchTopResponseElement?) {
-            binding.appCompatImageView.load(value?.game?.logo?.small)
+            binding.appCompatImageView.load(value?.game?.box?.large) {
+                placeholder(R.drawable.ic_baseline_cloud_download_56)
+                error(R.drawable.ic_error_56)
+                fallback(R.drawable.ic_baseline_videogame_asset_56)
+                crossfade(true)
+                crossfade(100)
+            }
             binding.textViewName.text = value?.game?.name
             binding.textViewChannels.text = "Channels: ${value?.channels.toString()}"
             binding.textViewViewers.text = "Viewers: ${value?.viewers.toString()}"

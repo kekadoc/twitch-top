@@ -5,7 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.kekadoc.test.twitch.streams.model.TwitchTopResponseElement
 import com.kekadoc.test.twitch.streams.repository.Repository
-import com.kekadoc.test.twitch.streams.storage.LocalStorage
+import com.kekadoc.test.twitch.streams.repository.LocalStorage
 
 
 class ExamplePagingSource(private val backend: Repository, private val storage: LocalStorage) : PagingSource<Int, TwitchTopResponseElement>() {
@@ -53,4 +53,5 @@ class ExamplePagingSource(private val backend: Repository, private val storage: 
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
         }
     }
+
 }

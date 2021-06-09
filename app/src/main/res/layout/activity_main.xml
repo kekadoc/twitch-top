@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        app:title="@string/activity_title"
+        app:titleTextColor="?colorOnPrimary"
         app:menu="@menu/menu_main"
         app:popupTheme="@style/Theme.TwitchStreams.PopupOverlay" />
 

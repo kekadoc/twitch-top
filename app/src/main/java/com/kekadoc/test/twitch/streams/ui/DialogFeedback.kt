@@ -22,10 +22,7 @@ class DialogFeedback : DialogFragment() {
     private lateinit var binding: DialogFeedbackBinding
 
     private fun close() {
-        val activity = requireActivity()
-        if (activity is Navigation)
-            activity.navigate(R.id.action_destination_feedback_to_destination_main)
-        else dismiss()
+        dismiss()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
